@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Pill Reminder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+       body {
+            /* Paste your image link inside the single quotes below */
+            background-image: url('https://plus.unsplash.com/premium_photo-1668898899024-02f028349666?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            
+            /* These 3 lines make the image fit perfectly on any screen size */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            
+            /* Keeps everything centered */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Optional: Adds a dark overlay so the white login card is easier to read */
+            background-color: rgba(0, 0, 0, 0.5);
+            background-blend-mode: overlay;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-card">
+
+        <h3 class="text-center mb-4" style="color: #333; font-weight: bold;">PillAlert</h3>
+        <p class="text-center text-muted mb-4">Sign in to manage your reminders</p>
+        
+        <form action="/login" method="POST">
+            <div class="mb-3">
+                <label class="form-label text-muted fw-bold">Username</label>
+                <input type="text" class="form-control form-control-lg" name="username" required placeholder="Enter username">
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label text-muted fw-bold">Password</label>
+                <input type="password" class="form-control form-control-lg" name="password" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 rounded-pill">Login</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted">Don't have an account? <a href="/register" class="text-decoration-none">Register here</a></small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

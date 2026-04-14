@@ -4,14 +4,23 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from twilio.rest import Client
 import sqlite3
 import datetime
+import os  # Add this to read Render variables
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+from apscheduler.schedulers.background import BackgroundScheduler
+from twilio.rest import Client
 
 app = Flask(__name__)
 
 # --- CONFIGURATION ---
-app.secret_key = 'super_secret_key_change_this_later' # Required for user sessions
-TWILIO_SID = 'ACf89606c16e2fc08e52786dba096aa77c'
-TWILIO_AUTH_TOKEN = 'd2d28c3aea8a23863d162a168c4f4e4a'
-TWILIO_PHONE = '+15755868791'
+app.secret_key = 'super_secret_key_change_this_later'
+
+# This pulls the values from the Render "Environment" tab we set up
+TWILIO_SID = os.environ.get('ACf89606c16e2fc08e52786dba096aa77c')
+TWILIO_AUTH_TOKEN = os.environ.get('cd2b7818b86b3ef3bcb17d641a442aa2')
+TWILIO_PHONE = os.environ.get('+15755868791')
+
+client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 
 # --- DATABASE SETUP ---
 def init_db():

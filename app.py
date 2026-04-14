@@ -5,10 +5,7 @@ from twilio.rest import Client
 import sqlite3
 import datetime
 import os  # Add this to read Render variables
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
-from apscheduler.schedulers.background import BackgroundScheduler
-from twilio.rest import Client
+
 
 app = Flask(__name__)
 

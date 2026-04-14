@@ -4,6 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from twilio.rest import Client
 import sqlite3
 import datetime
+import pytz # Add this
 import os  # Add this to read Render variables
 
 
@@ -138,18 +139,25 @@ def add_reminder():
     duration_days = int(request.form.get('duration_days', 1))
 
     # Convert the HTML time string into a Python datetime object
-    start_time = datetime.datetime.strptime(reminder_time_str, "%Y-%m-%dT%H:%M")
+    # 1. Define the IST timezone
+    IST = pytz.timezone('Asia/Kolkata')
+
+    # 2. Parse the string into a datetime object
+    # (Assuming reminder_time_str is like '2026-04-15 00:39')
+    start_time_naive = datetime.datetime.strptime(reminder_time_str, "%Y-%m-%dT%H:%M")
+    
+    # 3. Localize it so the system knows this is specifically IST time
+    start_time = IST.localize(start_time_naive)
 
     conn = sqlite3.connect('reminders.db')
     c = conn.cursor()
 
     # Loop through the number of days
     for i in range(duration_days):
-        # Add 'i' days to the original starting time
         current_day_time = start_time + datetime.timedelta(days=i)
         
-        # Convert the object back to a string for the database
-        db_time_str = current_day_time.strftime("%Y-%m-%dT%H:%M")
+        # 4. Save to DB as an ISO string that includes the timezone info
+        db_time_str = current_day_time.strftime("%Y-%m-%dT%H:%M:%S%z")
         
         # Insert each day into the database
         c.execute("INSERT INTO reminders (tablet_name, reminder_time, phone_number, is_sent) VALUES (?, ?, ?, 0)",

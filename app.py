@@ -166,9 +166,9 @@ def add_reminder():
         # Terminal print statement
         print(f"📝 SAVED: {tablet_name} scheduled for {db_time_str}")
         
-   conn.commit()
+    conn.commit()
     conn.close()
-
+    
     return jsonify({"status": "success", "message": f"Successfully set for {duration_days} day(s)!"})
 
 # --- Everything below this line should have ZERO spaces at the start ---

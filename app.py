@@ -166,13 +166,13 @@ def add_reminder():
         # Terminal print statement
         print(f"📝 SAVED: {tablet_name} scheduled for {db_time_str}")
         
-    conn.commit()
-   conn.close()
+   conn.commit()
+    conn.close()
 
     return jsonify({"status": "success", "message": f"Successfully set for {duration_days} day(s)!"})
 
-# Start the scheduler when the app loads (Outside of any function)
-init_db() 
+# --- Everything below this line should have ZERO spaces at the start ---
+init_db()
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_reminders, trigger="interval", seconds=60)
 scheduler.start()

@@ -167,13 +167,15 @@ def add_reminder():
         print(f"📝 SAVED: {tablet_name} scheduled for {db_time_str}")
         
     conn.commit()
-    conn.close()
-    
+   conn.close()
+
     return jsonify({"status": "success", "message": f"Successfully set for {duration_days} day(s)!"})
 
+# Start the scheduler when the app loads (Outside of any function)
+init_db() 
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=check_reminders, trigger="interval", seconds=60)
+scheduler.start()
+
 if __name__ == '__main__':
-    init_db()
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=check_reminders, trigger="interval", seconds=60)
-    scheduler.start()
     app.run(debug=True, use_reloader=False)

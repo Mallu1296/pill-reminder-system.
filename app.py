@@ -53,19 +53,33 @@ def send_sms(phone, tablet):
         print(f"❌ Failed to send SMS: {e}")
 
 def check_reminders():
-    now = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
+    # 1. Get current time in the SAME format as the database (with timezone)
+    IST = pytz.timezone('Asia/Kolkata')
+    now = datetime.datetime.now(IST).strftime("%Y-%m-%dT%H:%M") 
+    
+    print(f"--- Scheduler checking for reminders starting with: {now} ---")
+    
     conn = sqlite3.connect('reminders.db')
     c = conn.cursor()
-    c.execute("SELECT id, tablet_name, phone_number FROM reminders WHERE reminder_time = ? AND is_sent = 0", (now,))
+    
+    # 2. Use 'LIKE' so it matches the date and time, ignoring the extra seconds/offset
+    c.execute("SELECT id, tablet_name, phone_number, reminder_time FROM reminders WHERE reminder_time LIKE ? AND is_sent = 0", (now + '%',))
+    
     due_reminders = c.fetchall()
+    
     for reminder in due_reminders:
-        reminder_id, tablet_name, phone_number = reminder
+        reminder_id, tablet_name, phone_number, reminder_time = reminder
+        print(f"⏰ TRIGGERED: Sending SMS for {tablet_name} (Scheduled: {reminder_time})")
         
-        # ADD THIS LINE:
-        print(f"⏰ TRIGGERED: Sending SMS for {tablet_name} now...")
-        
-        send_sms(phone_number, tablet_name)
-        c.execute("UPDATE reminders SET is_sent = 1 WHERE id = ?", (reminder_id,))
+        try:
+            send_sms(phone_number, tablet_name)
+            c.execute("UPDATE reminders SET is_sent = 1 WHERE id = ?", (reminder_id,))
+            conn.commit()
+            print(f"✅ Success: {tablet_name} sent to {phone_number}")
+        except Exception as e:
+            print(f"❌ Twilio Error: {e}")
+
+    conn.close()
 
 # --- AUTHENTICATION ROUTES ---
 @app.route('/')
